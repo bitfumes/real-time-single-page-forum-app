@@ -1,12 +1,8 @@
 
 // Fonts
-@import url("https://fonts.googleapis.com/css?family=Raleway:300,400,600");
+@import url("https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons");
 
-// Variables
-@import "variables";
-
-// Bootstrap
-@import '~bootstrap/scss/bootstrap';
+@import '~vuetify/dist/vuetify.min.css';
 
 .navbar-laravel {
   background-color: #fff;
