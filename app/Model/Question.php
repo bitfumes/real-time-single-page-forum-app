@@ -25,6 +25,8 @@ class Question extends Model
 
     protected $fillable = ['title','slug','body','user_id','category_id'];
 
+    protected $with = ['replies'];
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -32,7 +34,7 @@ class Question extends Model
 
     public function replies()
     {
-        return $this->hasMany(Reply::class);
+        return $this->hasMany(Reply::class)->latest();
     }
     
     public function category()
