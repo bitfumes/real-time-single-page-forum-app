@@ -22,51 +22,55 @@
 
 <script>
 export default {
-  data(){
+  data() {
     return {
-      read : {},
-      unread : {},
-      unreadCount : 0
-    }
+      read: {},
+      unread: {},
+      unreadCount: 0,
+      sound: "http://soundbible.com/mp3/glass_ping-Go445-1207030150.mp3"
+    };
   },
-  created(){
-    if(User.loggedIn()){
-      this.getNotifications()
+  created() {
+    if (User.loggedIn()) {
+      this.getNotifications();
     }
 
-    Echo.private('App.User.' + User.id())
-      .notification((notification) => {
-          this.unread.unshift(notification)
-          this.unreadCount++
-      });
+    Echo.private("App.User." + User.id()).notification(notification => {
+      this.playSound();
+      this.unread.unshift(notification);
+      this.unreadCount++;
+    });
   },
-  methods:{
-    getNotifications(){
-      axios.post('/api/notifications')
-      .then(res => {
-        this.read = res.data.read
-        this.unread = res.data.unread
-        this.unreadCount = res.data.unread.length
-      })
-      .catch(error => Exception.handle(error))
+  methods: {
+    playSound() {
+      let alert = new Audio(this.sound);
+      alert.play();
     },
-    readIt(notification){
-      axios.post('/api/markAsRead',{id:notification.id})
-      .then(res => {
-        this.unread.splice(notification,1)
-        this.read.push(notification)
-        this.unreadCount--
-      })
+    getNotifications() {
+      axios
+        .post("/api/notifications")
+        .then(res => {
+          this.read = res.data.read;
+          this.unread = res.data.unread;
+          this.unreadCount = res.data.unread.length;
+        })
+        .catch(error => Exception.handle(error));
+    },
+    readIt(notification) {
+      axios.post("/api/markAsRead", { id: notification.id }).then(res => {
+        this.unread.splice(notification, 1);
+        this.read.push(notification);
+        this.unreadCount--;
+      });
     }
   },
-  computed:{
-    color(){
-      return this.unreadCount > 0 ? 'red' : 'red lighten-4'
+  computed: {
+    color() {
+      return this.unreadCount > 0 ? "red" : "red lighten-4";
     }
   }
-}
+};
 </script>
 
 <style>
-
 </style>

@@ -1,4 +1,3 @@
-
 window._ = require('lodash');
 window.Popper = require('popper.js').default;
 
@@ -52,12 +51,12 @@ window.Pusher = require('pusher-js');
 
 window.Echo = new Echo({
     broadcaster: 'pusher',
-    key: "b7c371f88f914f72b424",
+    key: "3b4e84100d3a3b66bbf4",
     cluster: "ap2",
     encrypted: true,
-    auth:{
-        headers:{
-            Authorization : JwtToken
+    auth: {
+        headers: {
+            Authorization: JwtToken
         }
     }
 });

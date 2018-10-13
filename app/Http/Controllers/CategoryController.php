@@ -6,6 +6,7 @@ use App\Model\Category;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Resources\CategoryResource;
+use App\Http\Requests\CategoryRequest;
 
 class CategoryController extends Controller
 {
@@ -16,10 +17,9 @@ class CategoryController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('JWT', ['except' => ['index','show']]);
+        $this->middleware('JWT', ['except' => ['index', 'show']]);
     }
 
-    
     /**
      * Display a listing of the resource.
      *
@@ -36,7 +36,7 @@ class CategoryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CategoryRequest $request)
     {
         // Category::create($request->all());
         $category = new Category;
@@ -68,8 +68,8 @@ class CategoryController extends Controller
     {
         $category->update(
             [
-                'name'=>$request->name,
-                'slug'=>str_slug($request->name)
+                'name'=> $request->name,
+                'slug'=> str_slug($request->name)
             ]
         );
         return response(new CategoryResource($category), Response::HTTP_ACCEPTED);

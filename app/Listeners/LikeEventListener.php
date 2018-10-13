@@ -3,8 +3,6 @@
 namespace App\Listeners;
 
 use App\Events\LikeEvent;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class LikeEventListener
 {

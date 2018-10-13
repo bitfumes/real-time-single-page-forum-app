@@ -1,5 +1,8 @@
 <template>
   <v-container>
+      <v-alert v-if="errors" type="error" :value="true">
+          Please give category name
+      </v-alert>
       <v-form @submit.prevent="submit">
           <v-text-field
             label="Category Name"
@@ -7,8 +10,8 @@
             required
             ></v-text-field>
 
-            <v-btn type="submit" color="pink" v-if="editSlug">Update</v-btn>
-            <v-btn type="submit" color="teal" v-else>Create</v-btn>
+            <v-btn type="submit" color="pink" v-if="editSlug" :disabled="disabled">Update</v-btn>
+            <v-btn type="submit" color="teal" v-else :disabled="disabled">Create</v-btn>
       </v-form>
 
       <v-card>
@@ -47,56 +50,59 @@
 
 <script>
 export default {
-
-    data(){
-        return {
-            form :{
-                name:null
-            },
-            categories:{},
-            editSlug:null
-        }
-    },
-    created(){
-
-        if(!User.admin()){
-            this.$router.push('/forum')
-        }
-        axios.get('/api/category')
-        .then(res => this.categories = res.data.data)
-    },
-    methods:{
-        submit(){
-            this.editSlug ? this.update() : this.create()
-        },
-        update(){
-            axios.patch(`/api/category/${this.editSlug}`,this.form)
-            .then(res => {
-                this.categories.unshift(res.data)
-                this.form.name = null
-                })
-        },
-        create(){
-            axios.post('/api/category',this.form)
-            .then(res => {
-                this.categories.unshift(res.data)
-                this.form.name = null
-                })
-        },
-        destroy(slug,index){
-            axios.delete(`/api/category/${slug}`)
-            .then(res => this.categories.splice(index,1))
-        },
-        edit(index){
-            this.form.name = this.categories[index].name
-            this.editSlug = this.categories[index].slug
-            this.categories.splice(index,1)
-        }
+  data() {
+    return {
+      form: {
+        name: null
+      },
+      categories: {},
+      editSlug: null,
+      errors: null
+    };
+  },
+  created() {
+    if (!User.admin()) {
+      this.$router.push("/forum");
     }
-
-}
+    axios.get("/api/category").then(res => (this.categories = res.data.data));
+  },
+  methods: {
+    submit() {
+      this.editSlug ? this.update() : this.create();
+    },
+    update() {
+      axios.patch(`/api/category/${this.editSlug}`, this.form).then(res => {
+        this.categories.unshift(res.data);
+        this.form.name = null;
+      });
+    },
+    create() {
+      axios
+        .post("/api/category", this.form)
+        .then(res => {
+          this.categories.unshift(res.data);
+          this.form.name = null;
+        })
+        .catch(error => (this.errors = error.response.data.errors));
+    },
+    destroy(slug, index) {
+      axios
+        .delete(`/api/category/${slug}`)
+        .then(res => this.categories.splice(index, 1));
+    },
+    edit(index) {
+      this.form.name = this.categories[index].name;
+      this.editSlug = this.categories[index].slug;
+      this.categories.splice(index, 1);
+    }
+  },
+  computed: {
+    disabled() {
+      return !this.form.name;
+    }
+  }
+};
 </script>
 
 <style>
-
 </style>
