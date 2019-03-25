@@ -14,6 +14,10 @@ class Question extends Model
         static::creating(function ($question) {
             $question->slug = str_slug($question->title);
         });
+
+        static::updating(function ($question) {
+            $question->slug = str_slug($question->title);
+        });
     }
 
     public function getRouteKeyName()
