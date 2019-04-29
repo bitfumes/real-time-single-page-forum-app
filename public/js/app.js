@@ -103009,7 +103009,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -103065,7 +103065,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     components: { EditReply: __WEBPACK_IMPORTED_MODULE_0__editReply___default.a, Like: __WEBPACK_IMPORTED_MODULE_1__likes_like___default.a },
     data: function data() {
         return {
-            editing: false
+            editing: false,
+            beforeEditReplyBody: ''
         };
     },
 
@@ -103086,13 +103087,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             EventBus.$emit('deleteReply', this.index);
         },
         edit: function edit() {
-            this.editing = true;
+            this.editing = true, this.beforeEditReplyBody = this.data.reply;
         },
         listen: function listen() {
             var _this = this;
 
-            EventBus.$on('cancelEditing', function () {
+            EventBus.$on('cancelEditing', function (reply) {
                 _this.editing = false;
+                if (reply !== _this.data.reply) {
+                    _this.data.reply = _this.beforeEditReplyBody;
+                    _this.beforeEditReplyBody = '';
+                }
             });
         }
     }
@@ -103214,14 +103219,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
     props: ['reply'],
     methods: {
-        cancel: function cancel() {
-            EventBus.$emit('cancelEditing');
+        cancel: function cancel(reply) {
+            EventBus.$emit('cancelEditing', reply);
         },
         update: function update() {
             var _this = this;
 
             axios.patch('/api/question/' + this.reply.question_slug + '/reply/' + this.reply.id, { body: this.reply.reply }).then(function (res) {
-                return _this.cancel();
+                return _this.cancel(_this.reply.reply);
             });
         }
     }
