@@ -101622,7 +101622,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -101655,25 +101655,45 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      questions: {}
+      questions: {},
+      meta: {}
     };
   },
 
   components: { question: __WEBPACK_IMPORTED_MODULE_0__question___default.a, AppSidebar: __WEBPACK_IMPORTED_MODULE_1__AppSidebar___default.a },
   created: function created() {
-    var _this = this;
+    this.fetchQuestions();
+  },
 
-    axios.get('/api/question').then(function (res) {
-      return _this.questions = res.data.data;
-    }).catch(function (error) {
-      return console.log(error.response.data);
-    });
+  methods: {
+    fetchQuestions: function fetchQuestions(page) {
+      var _this = this;
+
+      var url = page ? '/api/question?page=' + page : '/api/question';
+      axios.get(url).then(function (res) {
+        _this.questions = res.data.data;
+        _this.meta = res.data.meta;
+      }).catch(function (error) {
+        return console.log(error.response.data);
+      });
+    },
+    changePage: function changePage(page) {
+      this.fetchQuestions(page);
+    }
   }
 });
 
@@ -102050,12 +102070,34 @@ var render = function() {
           _c(
             "v-flex",
             { attrs: { xs8: "" } },
-            _vm._l(_vm.questions, function(question) {
-              return _c("question", {
-                key: question.path,
-                attrs: { data: question }
-              })
-            })
+            [
+              _vm._l(_vm.questions, function(question) {
+                return _c("question", {
+                  key: question.path,
+                  attrs: { data: question }
+                })
+              }),
+              _vm._v(" "),
+              _c(
+                "div",
+                { staticClass: "text-xs-center" },
+                [
+                  _c("v-pagination", {
+                    attrs: { length: _vm.meta.total },
+                    on: { input: _vm.changePage },
+                    model: {
+                      value: _vm.meta.current_page,
+                      callback: function($$v) {
+                        _vm.$set(_vm.meta, "current_page", $$v)
+                      },
+                      expression: "meta.current_page"
+                    }
+                  })
+                ],
+                1
+              )
+            ],
+            2
           ),
           _vm._v(" "),
           _c("v-flex", { attrs: { xs4: "" } }, [_c("app-sidebar")], 1)
